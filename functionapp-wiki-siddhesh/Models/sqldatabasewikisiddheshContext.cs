@@ -25,7 +25,7 @@ namespace functionapp_wiki_siddhesh.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=sqlserver-wiki-siddhesh.database.windows.net;Database=sqldatabase-wiki-siddhesh;user id=samrale;password=Saibabas123!;Encrypt=True;Trusted_Connection=False;");
+                optionsBuilder.UseSqlServer("Server=sqlserver-wiki-siddhesh.database.windows.net;Database=sqldatabase-wiki-siddhesh;Encrypt=True;Trusted_Connection=False;");
             }
         }
 
