@@ -25,7 +25,7 @@ namespace functionapp_wiki_siddhesh.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=sqlserver-wiki-siddhesh.database.windows.net;Database=sqldatabase-wiki-siddhesh;user id=samrale;password=Saibabas123!");
+                optionsBuilder.UseSqlServer("Server=sqlserver-wiki-siddhesh.database.windows.net;Database=sqldatabase-wiki-siddhesh;user id=samrale;password=Saibabas123!;Encrypt=True;Trusted_Connection=False;");
             }
         }
 
@@ -34,8 +34,8 @@ namespace functionapp_wiki_siddhesh.Models
             modelBuilder.Entity<Airport>(entity =>
             {
                 entity.Property(e => e.AirportId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("AirportID");
+                    .HasColumnName("AirportID")
+                    .HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.AirportName).HasMaxLength(50);
             });
@@ -43,8 +43,8 @@ namespace functionapp_wiki_siddhesh.Models
             modelBuilder.Entity<Flight>(entity =>
             {
                 entity.Property(e => e.FlightId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("FlightID");
+                    .HasColumnName("FlightID")
+                    .HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.FlightDate).HasColumnType("datetime");
 
@@ -53,19 +53,19 @@ namespace functionapp_wiki_siddhesh.Models
                 entity.HasOne(d => d.GateNavigation)
                     .WithMany(p => p.Flights)
                     .HasForeignKey(d => d.Gate)
-                    .HasConstraintName("FK__Flights__Gate__68487DD7");
+                    .HasConstraintName("FK__Flights__Gate__778AC167");
 
                 entity.HasOne(d => d.PartnerAirportNavigation)
                     .WithMany(p => p.Flights)
                     .HasForeignKey(d => d.PartnerAirport)
-                    .HasConstraintName("FK__Flights__Partner__6754599E");
+                    .HasConstraintName("FK__Flights__Partner__76969D2E");
             });
 
             modelBuilder.Entity<Gate>(entity =>
             {
                 entity.Property(e => e.GateId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("GateID");
+                    .HasColumnName("GateID")
+                    .HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.GateName).HasMaxLength(50);
             });

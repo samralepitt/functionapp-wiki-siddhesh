@@ -10,7 +10,7 @@ namespace functionapp_wiki_siddhesh.Models
             Flights = new HashSet<Flight>();
         }
 
-        public int GateId { get; set; }
+        public Guid GateId { get; set; }
         public string GateName { get; set; }
 
         public virtual ICollection<Flight> Flights { get; set; }
