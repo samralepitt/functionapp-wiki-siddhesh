@@ -8,56 +8,55 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using functionapp_wiki_siddhesh.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-namespace functionapp_wiki_siddhesh.GateFunctions
+namespace functionapp_wiki_siddhesh.FlightFunctions
 {
-    public static class GateFunction
+    public static class FlightFunction
     {
-        [FunctionName("GateFunction")]
+        [FunctionName("FlightFunction")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", "put", Route = "gates/{id?}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", "put", Route = "flights/{id?}")] HttpRequest req,
             ILogger log, string id)
         {
-            Guid gateId;
+            Guid flightId;
             var db = new sqldatabasewikisiddheshContext();
-            if(req.Method == "GET")
+            if (req.Method == "GET")
             {
                 if (String.IsNullOrEmpty(id))               //get all records if no id specified in Path
                 {
-                    var gates = db.Gates.ToList();
-                    return new OkObjectResult(gates);
+                    var flights = db.Flights.ToList();
+                    return new OkObjectResult(flights);
                 }
                 else
                 {
                     //Guid in Path Parameter
-                    if (!Guid.TryParse(id, out gateId)) { return new BadRequestObjectResult("Invalid gateID in URL - Bad Parse"); }
-                    var checkExist = db.Gates.Any(g => g.GateId == gateId);
+                    if (!Guid.TryParse(id, out flightId)) { return new BadRequestObjectResult("Invalid flightID in URL - Bad Parse"); }
+                    var checkExist = db.Flights.Any(g => g.FlightId == flightId);
                     if (checkExist)                         // get record by id
                     {
                         if (req.Method == "GET")
                         {
-                            var gate = db.Gates.Where(g=>g.GateId == gateId);
-                            return new OkObjectResult(gate);
+                            var flight = db.Flights.Where(g => g.FlightId == flightId);
+                            return new OkObjectResult(flight);
                         }
                     }
                 }
             }
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var data = JsonConvert.DeserializeObject<Gate>(requestBody);
+            var data = JsonConvert.DeserializeObject<Flight>(requestBody);
             //Guid in reqBody
-            if (!Guid.TryParse(data.GateId.ToString(), out gateId)) { return new BadRequestObjectResult("Invalid gateID in request"); }
-            var doesExist = db.Gates.Any(g => g.GateId == gateId);
+            if (!Guid.TryParse(data.FlightId.ToString(), out flightId)) { return new BadRequestObjectResult("Invalid flightID in request"); }
+            var doesExist = db.Flights.Any(g => g.FlightId == flightId);
 
             if (req.Method == "POST")
             {
                 if (doesExist)
                 {
-                    return new BadRequestObjectResult($"Entry Exists for {gateId}");
+                    return new BadRequestObjectResult($"Entry Exists for {flightId}");
                 }
-                db.Gates.Add(data);
+                db.Flights.Add(data);
                 await db.SaveChangesAsync();
                 return new OkObjectResult(data);
             }
@@ -65,18 +64,18 @@ namespace functionapp_wiki_siddhesh.GateFunctions
             {
                 if (req.Method == "DELETE")
                 {
-                    db.Gates.Remove(data);
+                    db.Flights.Remove(data);
                     await db.SaveChangesAsync();
                     return new OkObjectResult(data);
                 }
                 if (req.Method == "PUT")
                 {
-                    var checkGateExist = db.Gates.Any(m => (m.GateId == data.GateId) && (m.GateName == data.GateName));
-                    if(checkGateExist)
+                    var checkFlightExist = db.Flights.Any(m => (m.FlightId == data.FlightId) && (m.FlightNumber == data.FlightNumber));
+                    if (checkFlightExist)
                     {
-                        return new BadRequestObjectResult($"Duplicate Entry for {gateId}"); 
+                        return new BadRequestObjectResult($"Duplicate Entry for {flightId}");
                     }
-                    db.Gates.Update(data);
+                    db.Flights.Update(data);
                     await db.SaveChangesAsync();
                     return new OkObjectResult(data);
                 }
