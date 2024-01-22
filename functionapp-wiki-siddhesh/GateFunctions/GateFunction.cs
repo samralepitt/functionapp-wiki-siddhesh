@@ -38,9 +38,8 @@ namespace functionapp_wiki_siddhesh.GateFunctions
                     {
                         if (req.Method == "GET")
                         {
-                            var gate = db.Gates.FindAsync(gateId);
+                            var gate = db.Gates.Where(g=>g.GateId == gateId);
                             return new OkObjectResult(gate);
-
                         }
                     }
                 }
