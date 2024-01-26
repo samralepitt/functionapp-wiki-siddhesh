@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using functionapp_wiki_siddhesh.Models;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace functionapp_wiki_siddhesh.FlightFunctions
 {
@@ -28,7 +29,7 @@ namespace functionapp_wiki_siddhesh.FlightFunctions
                 {
                     if (String.IsNullOrEmpty(id))               //get all records if no id specified in Path
                     {
-                        var flights = db.Flights.ToList();
+                        var flights = db.Flights.Include(x => x.Gate).Include(x => x.PartnerAirportNavigation).ToList();
                         return new OkObjectResult(flights);
                     }
                     else

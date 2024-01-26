@@ -51,6 +51,7 @@ namespace functionapp_wiki_siddhesh.GateFunctions
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 var data = JsonConvert.DeserializeObject<Gate>(requestBody);
+                log.LogInformation("db gates delete",data.ToString());
                 //Guid in reqBody
                 if (!Guid.TryParse(data.GateId.ToString(), out gateId)) { return new BadRequestObjectResult("Invalid gateID in request"); }
                 var doesExist = db.Gates.Any(g => g.GateId == gateId);
@@ -65,15 +66,20 @@ namespace functionapp_wiki_siddhesh.GateFunctions
                     await db.SaveChangesAsync();
                     return new OkObjectResult(data);
                 }
+                log.LogInformation("GGGG", data.ToString());
                 if (doesExist)
                 {
                     if (req.Method == "DELETE")
                     {
+                        log.LogInformation("In delete req", data.ToString());
                         var hasDependency = db.Flights.Any(m => m.Gate == gateId);
+                        log.LogInformation(hasDependency.ToString());
                         if (hasDependency)
                         {
+                            
                             return new BadRequestObjectResult($"Cannot delete {gateId} ID. Dependency exists.");
                         }
+                        log.LogInformation("GGGG",data.ToString());
                         db.Gates.Remove(data);
                         await db.SaveChangesAsync();
                         return new OkObjectResult(data);
